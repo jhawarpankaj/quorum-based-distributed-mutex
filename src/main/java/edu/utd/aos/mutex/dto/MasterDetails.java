@@ -2,13 +2,8 @@ package edu.utd.aos.mutex.dto;
 
 import lombok.Data;
 
-/**
- * Details of servers.
- * 
- * @author pankaj
- */
 @Data
-public class ServerDetails {
+public class MasterDetails {
 	
 	/**
 	 * Name of the server.
@@ -16,13 +11,13 @@ public class ServerDetails {
 	String name;
 	
 	/**
-	 * Port of the server.
+	 * Server port.
 	 */
 	String port;
 	
 	/**
-	 * Id of the server.
+	 * Path of the file.
 	 */
-	int id;
+	String filepath;
 	
 }

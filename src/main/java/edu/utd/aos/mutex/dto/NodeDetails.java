@@ -13,12 +13,17 @@ import lombok.Data;
 public class NodeDetails {
 	
 	/**
+	 * Master Server Details.
+	 */
+	MasterDetails master;
+	
+	/**
 	 * Server Details.
 	 */
-	List<ServerDetails> serverDetails;
+	List<ServerDetails> servers;
 	
 	/**
 	 * Client Details.
 	 */
-	List<ClientDetails> clientDetails;
+	List<ClientDetails> clients;
 }

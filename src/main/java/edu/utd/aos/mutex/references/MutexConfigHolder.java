@@ -36,8 +36,7 @@ public class MutexConfigHolder {
 			applicationConfig = gson.fromJson(br, ApplicationConfig.class);
 		}catch(Exception e) {
 			throw new MutexException("Error while reading configuration file." + e);
-		}
-		
+		}	
 	}
 	
 	/**

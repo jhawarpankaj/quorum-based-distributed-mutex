@@ -16,6 +16,11 @@ public class ClientDetails {
 	String name;
 	
 	/**
+	 * Port of the server.
+	 */
+	String port;
+	
+	/**
 	 * Id of the client machine.
 	 */
 	int id;

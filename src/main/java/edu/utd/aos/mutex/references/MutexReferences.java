@@ -19,6 +19,20 @@ public class MutexReferences {
 	public static final int CONST_CODE_ERROR = 1;
 	
 	/**
+	 * Separator used across message transfer between nodes. Backslash for Regex Expression.
+	 */
+	public static final String SEPARATOR = "\\|\\|";
+	
+	/**
+	 * Separator.
+	 */
+	public static final String SEPARATOR_TEXT = "||";
+	
+	public static final String GRANT = "GRANT";
+	public static final String REQUEST = "REQUEST";
+	public static final String RELEASE = "RELEASE";
+	
+	/**
 	 * Private constructor for utility class.
 	 */
 	private MutexReferences() {

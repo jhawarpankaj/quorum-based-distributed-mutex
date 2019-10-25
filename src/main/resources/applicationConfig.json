@@ -1,42 +1,74 @@
 {
 	"nodeDetails": {
-		"serverDetails": [
+			
+		"master" : {
+			"name" : "dc01.utdallas.edu",
+			"port" : "5055",
+			"filepath" : "/home/013/p/px/pxj180019/" 
+		},
+		
+		"servers": [
 			{
-				"name" : "dc01",
-				"id" : 0,
-				"filePath" : "/tmp/pankaj/ragrawala/"
-			},
-			{
-				"name" : "dc02",
-				"id" : 1,
-				"filePath" : "/"
-			},
-			{
-				"name" : "dc03",
-				"id" : 2,
-				"filePath" : "/"
-			}
-		],
-		"clientDetails": [
-			{
-				"name" : "dc03",
-				"id" : 0
-			},
-			{
-				"name" : "dc03",
+				"name" : "dc02.utdallas.edu",
+				"port" : "5056",
 				"id" : 1
 			},
 			{
-				"name" : "dc03",
+				"name" : "dc03.utdallas.edu",
+				"port" : "5057",
 				"id" : 2
 			},
 			{
-				"name" : "dc03",
+				"name" : "dc04.utdallas.edu",
+				"port" : "5058",
 				"id" : 3
 			},
 			{
-				"name" : "dc03",
+				"name" : "dc05.utdallas.edu",
+				"port" : "5059",
 				"id" : 4
+			},
+			{
+				"name" : "dc06.utdallas.edu",
+				"port" : "5060",
+				"id" : 5
+			},
+			{
+				"name" : "dc07.utdallas.edu",
+				"port" : "5061",
+				"id" : 6
+			},
+			{
+				"name" : "dc08.utdallas.edu",
+				"port" : "5062",
+				"id" : 7
+			}
+		],
+		"clients": [
+			{
+				"name" : "dc09.utdallas.edu",
+				"port" : "5063",
+				"id" : 1
+			},
+						{
+				"name" : "dc10.utdallas.edu",
+				"port" : "5064",
+				"id" : 2
+			},
+			{
+				"name" : "dc11.utdallas.edu",
+				"port" : "5065",
+				"id" : 3
+			},			
+			{
+				"name" : "dc12.utdallas.edu",
+				"port" : "5066",
+				"id" : 4
+			},
+			{
+				"name" : "dc13.utdallas.edu",
+				"port" : "5067",
+				"id" : 5
 			}
 		]
 	}
