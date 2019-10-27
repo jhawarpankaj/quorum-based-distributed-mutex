@@ -1,5 +1,8 @@
 package edu.utd.aos.mutex.references;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 /**
  * Constants and references used across project.
  * 
@@ -28,9 +31,17 @@ public class MutexReferences {
 	 */
 	public static final String SEPARATOR_TEXT = "||";
 	
+	/**
+	 * Constant encoding to be used.
+	 */
+	public static final Charset ENCODING = StandardCharsets.UTF_8;
+	
 	public static final String GRANT = "GRANT";
 	public static final String REQUEST = "REQUEST";
 	public static final String RELEASE = "RELEASE";
+	public static final String SUCCESS = "SUCCESS";
+	public static final String COMPLETE = "COMPLETE";
+	public static final String ABORT = "ABORT";
 	
 	/**
 	 * Private constructor for utility class.

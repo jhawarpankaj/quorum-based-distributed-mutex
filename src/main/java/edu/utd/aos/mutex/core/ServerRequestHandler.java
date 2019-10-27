@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantLock;
@@ -30,42 +31,61 @@ public class ServerRequestHandler extends Thread {
     public void run(){
     	try {
     		String received = dis.readUTF();
-    		String clientName = this.worker.getInetAddress().getHostName();
-    		boolean isRequest = Server.isRequest(received);
+    		String clientName = this.worker.getInetAddress().getHostName();    		
+    		ArrayList<String> parsedMsg = Server.parseRequest(received);
     		lock.lock();
-    		if(isRequest) {
+    		String reqType = parsedMsg.get(0);
+    		if(reqType.equalsIgnoreCase(MutexReferences.REQUEST)) {
+    			Logger.info("Received REQUEST from client: " + clientName);
     			if(Server.isLocked()) {
-    				ClientRequestQueue parseClientRequest = Server.parseClientRequest(received);
+    				Logger.info("Server already in LOCKED state. Putting this request in queue.");
+    				Long time = Long.valueOf(parsedMsg.get(1));
+    				int clientId = Integer.valueOf(parsedMsg.get(2));
+    				ClientRequestQueue parseClientRequest = new ClientRequestQueue(time, clientId);
     				Server.priorityQueue.add(parseClientRequest);
+    				Server.printQueue();
     			}
     			else {
-    				Server.toggleState();
-    				dos.writeUTF(MutexReferences.GRANT);
+    				Logger.info("Server currently UNLOCKED. Going to LOCKED state and sending GRANT to client: " + clientName);
+    				Server.toggleState(); // server goes to LOCKED state.
+    				int port = Host.getClientPortByName(clientName);
+    				Logger.info("Port: " + port);
+    				Mutex.sendMessage(clientName, port, MutexReferences.GRANT);
     			}
     		}
-    		else {
+    		else if(reqType.equalsIgnoreCase(MutexReferences.RELEASE)){
+    			Logger.info("Received a RELEASE from client: " + clientName);
     			if(!Server.isLocked()) {
     				throw new MutexException("Received a RELEASE from client: " + clientName + " , but STATE was UNLOCKED!!");
     			}
     			else {
     				if(Server.priorityQueue.isEmpty()) {
+    					Logger.info("Server locked status was: " + Server.state + ", and "
+    							+ "currently Queue is empty, so going to: " + !Server.state);
     					Server.toggleState();
     				}
     				else {
+    					Logger.info("Server locked status was: " + Server.state + ", but "
+    							+ "queue was not empty. Hence continuing in the same state." );
+    					Logger.info("Current queue: " + Server.priorityQueue);
     					ClientRequestQueue poll = Server.priorityQueue.poll();
     					int id = poll.getId();
     					Map<String, String> client = Host.getClientById(id);
     					Entry<String, String> hm = client.entrySet().iterator().next();
     					String clientAddress = hm.getKey();
     					int clientPort = Integer.valueOf(hm.getValue());
-    					Socket socket = null;
-    					DataOutputStream out = null;
-    					socket = new Socket(clientAddress, clientPort);
-    					out = new DataOutputStream(socket.getOutputStream());
-    					out.writeUTF(MutexReferences.GRANT);
-    					socket.close();
+    					Logger.info("Sending GRANT to the first entry in queue.");
+    					Mutex.sendMessage(clientAddress, clientPort, MutexReferences.GRANT);
     				}
     			}
+    		}
+    		else if(reqType.equalsIgnoreCase(MutexReferences.ABORT)){
+    			Logger.info("Master server sent an ABORT message. Bye!");
+    			this.worker.close();
+    			System.exit(1);
+    		}
+    		else {
+    			throw new MutexException("Unknown operation type. Message received: " + received);
     		}
     		lock.unlock();
     	}catch(IOException | MutexException e) {

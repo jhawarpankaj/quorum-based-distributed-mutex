@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 import org.tinylog.Logger;
@@ -15,7 +16,7 @@ import edu.utd.com.aos.nodes.Host;
 
 public class Server {
 	
-	private static boolean state = false;
+	public static boolean state = false;
 	
 	public static PriorityQueue<ClientRequestQueue> priorityQueue = new PriorityQueue<>();
 
@@ -28,7 +29,7 @@ public class Server {
 	}
 
 	private static void openSocket() throws MutexException, IOException {
-		Logger.info("Setting up for server sockets.");
+		Logger.info("Setting up for server sockets for external requests.");
 		ServerSocket serverSocket = null;
 		try {
 			serverSocket = new ServerSocket(Integer.parseInt(Host.getPort()));
@@ -54,16 +55,25 @@ public class Server {
 		state = !state;
 	}
 
-	public static boolean isRequest(String input) {
-		String[] parsedString = input.split(MutexReferences.SEPARATOR);
-		if(parsedString[0].equalsIgnoreCase(MutexReferences.REQUEST)) return true;
-		else return false;
-	}
-
 	// format of Req: REQUEST||timestamp||client_id
-	public static ClientRequestQueue parseClientRequest(String received) {
+	public static ArrayList<String> parseRequest(String received) {
+		ArrayList<String> result = new ArrayList<String>();
 		String[] parsedString = received.split(MutexReferences.SEPARATOR);
-		return new ClientRequestQueue(Long.valueOf(parsedString[1]), Integer.valueOf(parsedString[2])); 
+		result.add(parsedString[0]);
+		if(parsedString.length == 3) {
+			result.add(parsedString[1]);
+			result.add(parsedString[2]);
+		}		
+		return result; 
+	}
+	
+	public static void printQueue() {
+		String temp = "";
+		for(ClientRequestQueue obj: Server.priorityQueue) {
+			temp = String.valueOf(obj.getId()) + ", ";
+		}
+		temp = temp.substring(0, temp.length() - 1);
+		Logger.info("Current Queue elements: " + temp);
 	}
 
 }

@@ -1,6 +1,4 @@
 package edu.utd.aos.mutex.core;
-import org.tinylog.Logger;
-
 import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.aos.mutex.references.MutexConfigHolder;
 import edu.utd.aos.mutex.references.MutexReferences;
@@ -9,7 +7,6 @@ import edu.utd.com.aos.nodes.Host;
 public class Main {
 
 	public static void main(final String[] args) {
-		Logger.info("Hello World!");
 		try {
 			initialize();
 			start();

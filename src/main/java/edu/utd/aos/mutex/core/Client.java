@@ -11,7 +11,11 @@ import java.util.concurrent.TimeUnit;
 
 import org.tinylog.Logger;
 
+import edu.utd.aos.mutex.dto.ApplicationConfig;
+import edu.utd.aos.mutex.dto.MasterDetails;
+import edu.utd.aos.mutex.dto.NodeDetails;
 import edu.utd.aos.mutex.exception.MutexException;
+import edu.utd.aos.mutex.references.MutexConfigHolder;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
@@ -19,12 +23,13 @@ public class Client {
 	
 	public static int requestsCount = 0;
 	public static HashMap<Integer, Boolean> clientRepliesCount = new HashMap<Integer, Boolean>();
-	private static ArrayList<Integer> currentQuorum;
-	private static boolean enteredCriticalSection;
+	public static ArrayList<Integer> currentQuorum;
+	public static boolean enteredCriticalSection;
 
 	public static void start() throws MutexException {
 		Quorum.initialize();
 		startSocket();
+		shutdown();
 	}
 
 	private static void startSocket() throws MutexException {
@@ -32,6 +37,7 @@ public class Client {
 		t1.start();
 		while(requestsCount != 20) {
 			ArrayList<Integer> randomQuorum = Quorum.getRandomQuorum();
+			Logger.info("Selected a quorum: " + randomQuorum);
 			randomWait();
 			currentQuorum = randomQuorum;
 			enteredCriticalSection = false;
@@ -43,6 +49,7 @@ public class Client {
 				long currentTimeStamp = System.currentTimeMillis();
 				String clientId = String.valueOf(Host.getId());
 				String formattedRequestMessage = Client.prepareRequestMessage(currentTimeStamp, clientId);
+				Logger.info("Sending REQUEST to quorum member: " + serverById + ", i.e., server name:" + serverName);
 				Socket socket = null;
 				DataOutputStream out = null;
 				try {
@@ -56,26 +63,45 @@ public class Client {
 			}
 			requestsCount++;
 			while(!enteredCriticalSection) {
-				randomWait();
+				Logger.info("Waiting a fixed time for the old request to be fulfilled.");
+				Mutex.fixedWait(3);
+			}
+			if(requestsCount < 20) {
+				Logger.info("Last request successfully completed. Generating a new request.");
+			}
+			else {
+				Logger.info("Completed 20 requests. Preparing to send COMPLETE to master.");
 			}
 		}
+			
+	}
+	
+	private static void shutdown() {
+		ApplicationConfig applicationConfig = MutexConfigHolder.getApplicationConfig();
+		NodeDetails nodeDetails = applicationConfig.getNodeDetails();
+		MasterDetails masterDetails = nodeDetails.getMaster();
+		String name = masterDetails.getName();
+		int port = Integer.valueOf(masterDetails.getPort());
+		Mutex.sendMessage(name, port, MutexReferences.COMPLETE);
 	}
 
-	private static void randomWait() {
+	public static void randomWait() {
 		Random rand = new Random();
 		int low = 2;
 		int high = 5;
 		long result = rand.nextInt(high-low) + low;
-		Logger.info("Sleeping for: " + result + " seconds before generating request.");
+		Logger.info("Sleeping for: " + result + " seconds.");
 		try {
 			TimeUnit.SECONDS.sleep(result);
 		} catch (InterruptedException e) {
 			Logger.error("Error while sleeping. " + e);
 		}
-		
 	}
-
-	private static String prepareRequestMessage(long currentTimeStamp, String clientId) {
+	
+	
+	
+	// REQUEST||timestamp||id
+	public static String prepareRequestMessage(long currentTimeStamp, String clientId) {
 		String msg = MutexReferences.REQUEST + MutexReferences.SEPARATOR_TEXT + currentTimeStamp + MutexReferences.SEPARATOR_TEXT + clientId;
 		return msg;
 		

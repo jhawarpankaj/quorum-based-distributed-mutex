@@ -28,6 +28,7 @@ public class Host {
 	private static String port;
 	private static int id;
 	private static String filepath;
+	private static String filename;
 	public enum Node {
 		MASTER, SERVER, CLIENT
 	};
@@ -45,7 +46,6 @@ public class Host {
 		setLocalHostPort();
 		createServerList();
 		createClientList();
-//		setAllOtherClients();
 		Logger.info("All localhost initialization complete.");
 	}
 	
@@ -75,6 +75,7 @@ public class Host {
 			type = Node.MASTER;
 			port = masterDetails.getPort();
 			filepath = masterDetails.getFilepath();
+			filename = masterDetails.getFilename();
 			return;
 		}
 		
@@ -157,6 +158,32 @@ public class Host {
 		return null;
 	}
 	
+	public static Integer getClientIdFromName(String name) {
+		
+		ApplicationConfig applicationConfig = MutexConfigHolder.getApplicationConfig();
+		NodeDetails nodeDetails = applicationConfig.getNodeDetails();
+		List<ClientDetails> clientDetails = nodeDetails.getClients();
+		for(ClientDetails client: clientDetails) {
+			if(client.getName().equalsIgnoreCase(name)) {
+				return client.getId();
+			}
+		}
+		return null;
+	}
+	
+	public static Integer getClientPortByName(String name) {
+		
+		ApplicationConfig applicationConfig = MutexConfigHolder.getApplicationConfig();
+		NodeDetails nodeDetails = applicationConfig.getNodeDetails();
+		List<ClientDetails> clients = nodeDetails.getClients();
+		for(ClientDetails clientDetails: clients) {
+			if(name.equalsIgnoreCase(clientDetails.getName())) {
+				return Integer.valueOf(clientDetails.getPort());
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @return Name of the host.
 	 */
@@ -183,6 +210,13 @@ public class Host {
 	 */
 	public static String getFilePath() {
 		return filepath;
+	}
+	
+	/**
+	 * @return Name of the file.
+	 */
+	public static String getFileName() {
+		return filename;
 	}
 	
 	/**

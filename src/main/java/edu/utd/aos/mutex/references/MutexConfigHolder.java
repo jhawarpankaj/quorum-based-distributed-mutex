@@ -30,6 +30,7 @@ public class MutexConfigHolder {
 	public static void initialize() throws MutexException{
 		Logger.info("Initializing application config file.");
 		final String configFile = System.getProperty(MutexReferences.KEY_MUTEX_CONFIG);
+		Logger.info("Could not find.");
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(configFile));
 			final Gson gson = new Gson();

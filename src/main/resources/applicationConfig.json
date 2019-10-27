@@ -4,7 +4,8 @@
 		"master" : {
 			"name" : "dc01.utdallas.edu",
 			"port" : "5055",
-			"filepath" : "/home/013/p/px/pxj180019/" 
+			"filepath" : "/home/013/p/px/pxj180019/master_file/",
+			"filename" : "file.txt" 
 		},
 		
 		"servers": [
@@ -50,7 +51,7 @@
 				"port" : "5063",
 				"id" : 1
 			},
-						{
+			{
 				"name" : "dc10.utdallas.edu",
 				"port" : "5064",
 				"id" : 2
@@ -59,7 +60,7 @@
 				"name" : "dc11.utdallas.edu",
 				"port" : "5065",
 				"id" : 3
-			},			
+			},
 			{
 				"name" : "dc12.utdallas.edu",
 				"port" : "5066",

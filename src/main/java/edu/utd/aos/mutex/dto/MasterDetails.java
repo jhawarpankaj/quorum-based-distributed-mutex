@@ -20,4 +20,9 @@ public class MasterDetails {
 	 */
 	String filepath;
 	
+	/**
+	 * Name of the file.
+	 */
+	String filename;
+	
 }

@@ -2,7 +2,8 @@ package edu.utd.aos.mutex.core;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.IntStream;
+
+import org.tinylog.Logger;
 
 import edu.utd.com.aos.nodes.Host;
 
@@ -39,7 +40,18 @@ public class Quorum {
 		root.left.right = new QuorumTree(sortedServerIds.get(index++));
 		root.right.left = new QuorumTree(sortedServerIds.get(index++));
 		root.right.right = new QuorumTree(sortedServerIds.get(index++));
+		
+		Logger.info("The fixed quorum tree structure: ");
+		print("", root, false);
 	}
+	
+	public static void print(String prefix, QuorumTree n, boolean isLeft) {
+        if (n != null) {
+            Logger.info(prefix + (isLeft ? "|-- " : "\\-- ") + n.id);
+            print(prefix + (isLeft ? "|   " : "    "), n.left, true);
+            print(prefix + (isLeft ? "|   " : "    "), n.right, false);
+        }
+    }
 	
 	private static void generateRandomQuorum(QuorumTree node, ArrayList<Integer> result) {
 		if(node == null) return;
