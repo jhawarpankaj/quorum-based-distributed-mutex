@@ -37,10 +37,9 @@ public class MasterServerRequestHandler extends Thread {
     		int clientId = Host.getClientIdFromName(clientName);
     		Map<String, String> client = Host.getClientById(clientId);
 			Entry<String, String> hm = client.entrySet().iterator().next();
-			int clientPort = Integer.valueOf(hm.getValue());
-    		
+			int clientPort = Integer.valueOf(hm.getValue());    		
     		ArrayList<String> parseInputMessage = Master.parseInputMessage(received);
-    		
+    		Metrics.incRecMsg();
     		if(parseInputMessage.get(0).equalsIgnoreCase(MutexReferences.REQUEST)) {
     			Logger.info("Received a REQUEST from server: " + clientName);
     			lock.lock();

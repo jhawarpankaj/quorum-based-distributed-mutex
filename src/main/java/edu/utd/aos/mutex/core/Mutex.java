@@ -59,6 +59,7 @@ public class Mutex {
 			socket = new Socket(name, port);
 			out = new DataOutputStream(socket.getOutputStream());
 			out.writeUTF(message);
+			Metrics.incSentMsg();
 			socket.close();
 			Logger.info("Sent " + message + " message to node: " + name);
 		}catch(Exception e) {

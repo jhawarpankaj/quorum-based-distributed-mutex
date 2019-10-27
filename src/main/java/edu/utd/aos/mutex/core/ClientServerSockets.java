@@ -35,15 +35,17 @@ public class ClientServerSockets extends Thread {
 	            String serverResponse = dis.readUTF();
 	            Logger.info("Received message: " + serverResponse + ", from server: " + serverHostName);
 	            lock.lock();
+	            Metrics.incRecMsg();
 	            if(serverResponse.equalsIgnoreCase(MutexReferences.GRANT)) {
 	            	Logger.info("Received a GRANT message from server: " + serverHostName);
 	            	if(Client.clientRepliesCount.containsKey(serverId)) {
 	            		throw new MutexException("Client already had a request from server: " + serverHostName + ", but got another.");
 	            	}
-	            	else {	            		
+	            	else {	
 	            		Client.clientRepliesCount.put(serverId, true);
 	            		Logger.info("Saved the grant: " + Client.clientRepliesCount);
 	            		if(Client.gotRequiredReplies()) {
+	            			Metrics.criticalSectionEndTimeSnapshot(Client.requestsCount);
 	            			Logger.info("Got required replies to enter critical section.");
 	            			ApplicationConfig applicationConfig = MutexConfigHolder.getApplicationConfig();
 	            			NodeDetails nodeDetails = applicationConfig.getNodeDetails();
@@ -76,9 +78,10 @@ public class ClientServerSockets extends Thread {
 	            	Logger.info("After sending RELEASE to all servers, replies map: " + Client.clientRepliesCount);
 	            	Client.enteredCriticalSection = true;
 	            }
-	            else if(serverResponse.equalsIgnoreCase(MutexReferences.ABORT)) {
-	            	Logger.info("Got ABORT from master server. Killing myself. Bye!");
-	            	Client.randomWait();
+	            else if(serverResponse.equalsIgnoreCase(MutexReferences.ABORT)) {	            	
+	            	Logger.info("Got ABORT from master server. Killing myself. Bye! Below are my metrics:");
+//	            	Client.randomWait();
+	            	Metrics.display();
 	            	clientSocket.close();
 	            	System.exit(1);
 	            }

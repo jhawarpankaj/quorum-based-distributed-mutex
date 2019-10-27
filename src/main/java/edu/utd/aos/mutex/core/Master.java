@@ -72,7 +72,6 @@ public class Master {
 			serverSocket.close();
 			throw new MutexException("Error in server socket." + e);
 		}
-		
 	}
 
 	private static void initialize() throws MutexException {
@@ -127,9 +126,9 @@ public class Master {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			Logger.error("No peace even before death !!!");
-		}		
-		Logger.info("Killing myself !!");
+		}
+		Logger.info("Killing myself !! Below are my metrics:");
+		Metrics.display();
 		System.exit(1);
 	}
-
 }

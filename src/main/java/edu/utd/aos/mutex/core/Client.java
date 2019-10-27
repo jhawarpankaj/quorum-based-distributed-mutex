@@ -1,7 +1,5 @@
 package edu.utd.aos.mutex.core;
 
-import java.io.DataOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +39,8 @@ public class Client {
 			randomWait();
 			currentQuorum = randomQuorum;
 			enteredCriticalSection = false;
+			Metrics.criticalSectionStartMsgSnapshot();
+			Metrics.criticalSectionStartTimeSnapshot();
 			for(Integer id: randomQuorum) {
 				Map<String, String> serverById = Host.getServerById(id);
 				Entry<String, String> entry = serverById.entrySet().iterator().next();
@@ -50,22 +50,15 @@ public class Client {
 				String clientId = String.valueOf(Host.getId());
 				String formattedRequestMessage = Client.prepareRequestMessage(currentTimeStamp, clientId);
 				Logger.info("Sending REQUEST to quorum member: " + serverById + ", i.e., server name:" + serverName);
-				Socket socket = null;
-				DataOutputStream out = null;
-				try {
-					socket = new Socket(serverName, serverPort);
-					out = new DataOutputStream(socket.getOutputStream());
-					out.writeUTF(formattedRequestMessage);
-					socket.close();
-				}catch(Exception e) {
-					throw new MutexException("Error while sending request to server: " + serverName);
-				}
+				Mutex.sendMessage(serverName, serverPort, formattedRequestMessage);
 			}
-			requestsCount++;
+			
 			while(!enteredCriticalSection) {
-				Logger.info("Waiting a fixed time for the old request to be fulfilled.");
+				Logger.info("Waiting for the old REQUEST to get COMPLETED before generating a new quorum.");
 				Mutex.fixedWait(3);
 			}
+			Metrics.criticalSectionEndMsgSnapshot(requestsCount);
+			requestsCount++;
 			if(requestsCount < 20) {
 				Logger.info("Last request successfully completed. Generating a new request.");
 			}
@@ -82,6 +75,7 @@ public class Client {
 		MasterDetails masterDetails = nodeDetails.getMaster();
 		String name = masterDetails.getName();
 		int port = Integer.valueOf(masterDetails.getPort());
+		Metrics.takeCompletionSnapshot();
 		Mutex.sendMessage(name, port, MutexReferences.COMPLETE);
 	}
 
@@ -97,8 +91,6 @@ public class Client {
 			Logger.error("Error while sleeping. " + e);
 		}
 	}
-	
-	
 	
 	// REQUEST||timestamp||id
 	public static String prepareRequestMessage(long currentTimeStamp, String clientId) {

@@ -34,6 +34,7 @@ public class ServerRequestHandler extends Thread {
     		String clientName = this.worker.getInetAddress().getHostName();    		
     		ArrayList<String> parsedMsg = Server.parseRequest(received);
     		lock.lock();
+    		Metrics.incRecMsg();
     		String reqType = parsedMsg.get(0);
     		if(reqType.equalsIgnoreCase(MutexReferences.REQUEST)) {
     			Logger.info("Received REQUEST from client: " + clientName);
@@ -80,7 +81,9 @@ public class ServerRequestHandler extends Thread {
     			}
     		}
     		else if(reqType.equalsIgnoreCase(MutexReferences.ABORT)){
-    			Logger.info("Master server sent an ABORT message. Bye!");
+    			Logger.info("Master server sent an ABORT message. Bye! Below are my metrics:");
+//    			Client.randomWait();
+            	Metrics.display();
     			this.worker.close();
     			System.exit(1);
     		}
