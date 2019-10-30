@@ -29,27 +29,6 @@ public class Mutex {
 			default:
 				throw new MutexException("Unidentified node type.");
 		}
-		
-//		if(type.equals(Node.MASTER)) {
-//			Master.start();
-//		}
-//		else if(type.equals(Node.SERVER)) {
-//			Server.start();
-//		}
-//		else if (type.equals(Node.CLIENT)){
-//			
-//			Logger.info("Sleeping for 1/2 minutes until all clients are up.");
-//			try {
-//				TimeUnit.SECONDS.sleep(30);
-//			} catch (InterruptedException e) {
-//				Logger.error("Error while sleeping at beginning.");
-//			}
-//			
-//			Client.start();
-//		}
-//		else {
-//			throw new MutexException("Unidentified node type.");
-//		}
 	}
 	
 	public static void sendMessage(String name, int port, String message) {

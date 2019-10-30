@@ -128,6 +128,7 @@ public class Master {
 			Logger.error("No peace even before death !!!");
 		}
 		Logger.info("Killing myself !! Below are my metrics:");
+		Metrics.takeCompletionSnapshot();
 		Metrics.display();
 		System.exit(1);
 	}

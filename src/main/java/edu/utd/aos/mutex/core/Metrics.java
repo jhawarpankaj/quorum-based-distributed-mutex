@@ -42,11 +42,11 @@ public class Metrics {
 
 	public static void criticalSectionStartMsgSnapshot() {
 		criticalSectionSent = sentMsg;
-		criticalSectionRec = recMsg;		
+		criticalSectionRec = recMsg;
 	}
 
 	public static void criticalSectionEndMsgSnapshot(int requestNo) {
-		String msg = "Critical Section entry: " + (++requestNo) + ", total no "
+		String msg = "For critical Section entry: " + (++requestNo) + ", total no "
 				+ "of messages exchanged: " + ((sentMsg - criticalSectionSent) + (recMsg - criticalSectionRec));
 		metricsString.add(msg);
 	}
@@ -57,15 +57,23 @@ public class Metrics {
 
 	public static void criticalSectionEndTimeSnapshot(int cnt) {
 		endTime = System.currentTimeMillis();
-		String msg = "Critical section entry: " + cnt + ". Total time elapsed between making "
+		String msg = "For critical section entry: " + (cnt + 1) + ", total time elapsed between making "
 				+ "a request and entering critical section: " + (endTime - startTime);
 		metricsString.add(msg);
 	}
 
-	public static void noteCriticalSectionExit() {
+	public static void noteCriticalSectionExit(int reqNo) {
 		criticalSectionExit = System.currentTimeMillis();
+		String msg = "For request:" + (reqNo + 1) +", total time in critical section = " + (criticalSectionExit - endTime);
+		metricsString.add(msg);
 	}
 
+	public static void exitAndReEntry(int requestsCount) {
+		String msg = "Time after request no " + requestsCount + "'s critical section exit "
+				+ "and issuing next request: " + (startTime - criticalSectionExit);
+		metricsString.add(msg);
+	}
+	
 	public static void display() {
 		for(String output: metricsString) {
 			Logger.info(output);

@@ -41,7 +41,7 @@ public class ClientServerSockets extends Thread {
 	            	if(Client.clientRepliesCount.containsKey(serverId)) {
 	            		throw new MutexException("Client already had a request from server: " + serverHostName + ", but got another.");
 	            	}
-	            	else {	
+	            	else {
 	            		Client.clientRepliesCount.put(serverId, true);
 	            		Logger.info("Saved the grant: " + Client.clientRepliesCount);
 	            		if(Client.gotRequiredReplies()) {
@@ -62,8 +62,10 @@ public class ClientServerSockets extends Thread {
 	            	}
 	            }
 	            else if(serverResponse.equalsIgnoreCase(MutexReferences.SUCCESS)) {
+	            	Metrics.noteCriticalSectionExit(Client.requestsCount);
 	            	Logger.info("Received a SUCCESS from Master server: " + serverHostName);
 	            	Client.randomWait();
+//	            	Mutex.fixedWait(10);
 	            	ArrayList<Integer> currentQuorum = Client.currentQuorum;
 	            	Logger.info("Sending a RELEASE to all current quorom servers.");
 	            	Logger.info("Quorum servers to send RELEASE messages: " + currentQuorum);
@@ -79,7 +81,7 @@ public class ClientServerSockets extends Thread {
 	            	Client.enteredCriticalSection = true;
 	            }
 	            else if(serverResponse.equalsIgnoreCase(MutexReferences.ABORT)) {	            	
-	            	Logger.info("Got ABORT from master server. Killing myself. Bye! Below are my metrics:");
+	            	Logger.info("Got an ABORT. Killing myself. Bye! Below are my metrics:");
 //	            	Client.randomWait();
 	            	Metrics.display();
 	            	clientSocket.close();

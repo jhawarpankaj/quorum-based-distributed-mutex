@@ -83,6 +83,7 @@ public class ServerRequestHandler extends Thread {
     		else if(reqType.equalsIgnoreCase(MutexReferences.ABORT)){
     			Logger.info("Master server sent an ABORT message. Bye! Below are my metrics:");
 //    			Client.randomWait();
+    			Metrics.takeCompletionSnapshot();
             	Metrics.display();
     			this.worker.close();
     			System.exit(1);

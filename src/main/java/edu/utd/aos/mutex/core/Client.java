@@ -1,6 +1,7 @@
 package edu.utd.aos.mutex.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,15 +34,21 @@ public class Client {
 	private static void startSocket() throws MutexException {
 		Thread t1 = new ClientServerSockets();
 		t1.start();
+		boolean deadlock = false;
 		while(requestsCount != 20) {
 			ArrayList<Integer> randomQuorum = Quorum.getRandomQuorum();
+//			randomQuorum = new ArrayList<Integer>(Arrays.asList(4, 5, 6, 7));
 			Logger.info("Selected a quorum: " + randomQuorum);
 			randomWait();
 			currentQuorum = randomQuorum;
 			enteredCriticalSection = false;
 			Metrics.criticalSectionStartMsgSnapshot();
 			Metrics.criticalSectionStartTimeSnapshot();
+			if(Client.requestsCount != 0) {
+				Metrics.exitAndReEntry(Client.requestsCount);
+			}
 			for(Integer id: randomQuorum) {
+//				Client.randomWait();
 				Map<String, String> serverById = Host.getServerById(id);
 				Entry<String, String> entry = serverById.entrySet().iterator().next();
 				String serverName = entry.getKey();
@@ -52,10 +59,19 @@ public class Client {
 				Logger.info("Sending REQUEST to quorum member: " + serverById + ", i.e., server name:" + serverName);
 				Mutex.sendMessage(serverName, serverPort, formattedRequestMessage);
 			}
-			
+			int waitingTimeinSeconds = 0;
 			while(!enteredCriticalSection) {
 				Logger.info("Waiting for the old REQUEST to get COMPLETED before generating a new quorum.");
 				Mutex.fixedWait(3);
+				waitingTimeinSeconds+=3;
+				if(waitingTimeinSeconds >= 90) {
+					Logger.info("Looks like a DEADLOCK situation. Preparing to ABORT.");
+					deadlock = true;
+					break;
+				}
+			}
+			if(deadlock) {
+				Mutex.sendMessage(Host.getname(), Integer.valueOf(Host.getPort()), MutexReferences.ABORT);
 			}
 			Metrics.criticalSectionEndMsgSnapshot(requestsCount);
 			requestsCount++;
