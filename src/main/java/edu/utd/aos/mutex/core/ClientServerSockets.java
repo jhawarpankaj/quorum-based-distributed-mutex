@@ -18,8 +18,16 @@ import edu.utd.aos.mutex.references.MutexConfigHolder;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * For executing all requests received by the clients.
+ * 
+ * @author pankaj
+ *
+ */
 public class ClientServerSockets extends Thread {
+	
 	public static final ReentrantLock lock = new ReentrantLock();
+	
 	@Override
 	public void run() {
 		ServerSocket serverSocket = null;
@@ -62,10 +70,11 @@ public class ClientServerSockets extends Thread {
 	            	}
 	            }
 	            else if(serverResponse.equalsIgnoreCase(MutexReferences.SUCCESS)) {
-	            	Metrics.noteCriticalSectionExit(Client.requestsCount);
+	            	
 	            	Logger.info("Received a SUCCESS from Master server: " + serverHostName);
-	            	Client.randomWait();
-//	            	Mutex.fixedWait(10);
+	            	Client.randomWait(1, 3);
+//	            	Mutex.fixedWait(5);
+	            	Metrics.noteCriticalSectionExit(Client.requestsCount);	            	
 	            	ArrayList<Integer> currentQuorum = Client.currentQuorum;
 	            	Logger.info("Sending a RELEASE to all current quorom servers.");
 	            	Logger.info("Quorum servers to send RELEASE messages: " + currentQuorum);

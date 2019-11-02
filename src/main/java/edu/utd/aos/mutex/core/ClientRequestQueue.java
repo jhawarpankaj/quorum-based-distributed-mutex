@@ -1,6 +1,11 @@
 package edu.utd.aos.mutex.core;
 
 
+/**
+ * Class to order clients request in queue sorted according to timestamp.
+ * @author pankaj
+ * 
+ */
 public class ClientRequestQueue implements Comparable<ClientRequestQueue>{
 	
 	private long timestamp;

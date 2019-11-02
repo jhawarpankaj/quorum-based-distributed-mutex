@@ -23,6 +23,11 @@ import edu.utd.aos.mutex.references.MutexConfigHolder;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * All master server (file server) stuffs.
+ * @author pankaj
+ *
+ */
 public class Master {
 	
 	private static Map<String, Boolean> completionCount = new HashMap<String, Boolean>();

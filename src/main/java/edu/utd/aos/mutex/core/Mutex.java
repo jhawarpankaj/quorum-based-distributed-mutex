@@ -10,6 +10,11 @@ import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.com.aos.nodes.Host;
 import edu.utd.com.aos.nodes.Host.Node;
 
+/**
+ * To start execution for client, server or master server.
+ * @author pankaj
+ *
+ */
 public class Mutex {
 	
 	public static void start() throws MutexException {

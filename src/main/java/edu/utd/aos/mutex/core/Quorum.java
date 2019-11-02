@@ -7,6 +7,11 @@ import org.tinylog.Logger;
 
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * Logic for selecting a quorum.
+ * @author pankaj
+ *
+ */
 public class Quorum {
 	
 	private static QuorumTree root;

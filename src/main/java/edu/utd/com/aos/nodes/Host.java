@@ -22,6 +22,12 @@ import edu.utd.aos.mutex.dto.ServerDetails;
 import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.aos.mutex.references.MutexConfigHolder;
 
+/**
+ * All utils related to nodes.
+ * 
+ * @author pankaj
+ *
+ */
 public class Host {
 	
 	private static String name;

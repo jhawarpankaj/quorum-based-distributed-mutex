@@ -18,6 +18,10 @@ import edu.utd.aos.mutex.references.MutexConfigHolder;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * @author pankaj
+ * File responsible for all client send requests.
+ */
 public class Client {
 	
 	public static int requestsCount = 0;
@@ -31,24 +35,30 @@ public class Client {
 		shutdown();
 	}
 
+	/**
+	 * To start client socket to accept requests.
+	 * @throws MutexException
+	 */
 	private static void startSocket() throws MutexException {
 		Thread t1 = new ClientServerSockets();
 		t1.start();
 		boolean deadlock = false;
 		while(requestsCount != 20) {
+			// for 2.3.a
+			randomWait(2, 5);
+//			Mutex.fixedWait(5);
+			Metrics.criticalSectionStartMsgSnapshot();
+			Metrics.criticalSectionStartTimeSnapshot();
 			ArrayList<Integer> randomQuorum = Quorum.getRandomQuorum();
 //			randomQuorum = new ArrayList<Integer>(Arrays.asList(4, 5, 6, 7));
 			Logger.info("Selected a quorum: " + randomQuorum);
-			randomWait();
+
 			currentQuorum = randomQuorum;
-			enteredCriticalSection = false;
-			Metrics.criticalSectionStartMsgSnapshot();
-			Metrics.criticalSectionStartTimeSnapshot();
+			enteredCriticalSection = false;			
 			if(Client.requestsCount != 0) {
 				Metrics.exitAndReEntry(Client.requestsCount);
 			}
 			for(Integer id: randomQuorum) {
-//				Client.randomWait();
 				Map<String, String> serverById = Host.getServerById(id);
 				Entry<String, String> entry = serverById.entrySet().iterator().next();
 				String serverName = entry.getKey();
@@ -95,11 +105,9 @@ public class Client {
 		Mutex.sendMessage(name, port, MutexReferences.COMPLETE);
 	}
 
-	public static void randomWait() {
+	public static void randomWait(int low, int high) {
 		Random rand = new Random();
-		int low = 2;
-		int high = 5;
-		long result = rand.nextInt(high-low) + low;
+		long result = rand.nextInt(high - low + 1) + low;
 		Logger.info("Sleeping for: " + result + " seconds.");
 		try {
 			TimeUnit.SECONDS.sleep(result);

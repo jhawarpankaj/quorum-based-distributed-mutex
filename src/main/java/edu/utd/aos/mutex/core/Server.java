@@ -14,6 +14,12 @@ import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * To handle requests related to quorum servers.
+ * 
+ * @author pankaj
+ *
+ */
 public class Server {
 	
 	public static boolean state = false;

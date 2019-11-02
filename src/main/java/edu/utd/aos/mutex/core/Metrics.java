@@ -7,6 +7,11 @@ import org.tinylog.Logger;
 import edu.utd.com.aos.nodes.Host;
 import edu.utd.com.aos.nodes.Host.Node;
 
+/**
+ * To display all metrics.
+ * @author pankaj
+ *
+ */
 public class Metrics {
 	private static int sentMsg = 0;
 	private static int recMsg = 0;
@@ -58,19 +63,19 @@ public class Metrics {
 	public static void criticalSectionEndTimeSnapshot(int cnt) {
 		endTime = System.currentTimeMillis();
 		String msg = "For critical section entry: " + (cnt + 1) + ", total time elapsed between making "
-				+ "a request and entering critical section: " + (endTime - startTime);
+				+ "a request and entering critical section (latency): " + (endTime - startTime) + " ms.";
 		metricsString.add(msg);
 	}
 
 	public static void noteCriticalSectionExit(int reqNo) {
 		criticalSectionExit = System.currentTimeMillis();
-		String msg = "For request:" + (reqNo + 1) +", total time in critical section = " + (criticalSectionExit - endTime);
+		String msg = "For request:" + (reqNo + 1) +", total time in critical section = " + (criticalSectionExit - endTime) + " ms.";
 		metricsString.add(msg);
 	}
 
 	public static void exitAndReEntry(int requestsCount) {
 		String msg = "Time after request no " + requestsCount + "'s critical section exit "
-				+ "and issuing next request: " + (startTime - criticalSectionExit);
+				+ "and issuing next request: " + (startTime - criticalSectionExit) + " ms.";
 		metricsString.add(msg);
 	}
 	

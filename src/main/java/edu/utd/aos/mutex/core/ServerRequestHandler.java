@@ -15,6 +15,12 @@ import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * Requests handler for quorum servers.
+ * 
+ * @author pankaj
+ *
+ */
 public class ServerRequestHandler extends Thread {
 	final Socket worker;
 	final DataInputStream dis;

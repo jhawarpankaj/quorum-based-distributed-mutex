@@ -17,6 +17,11 @@ import edu.utd.aos.mutex.exception.MutexException;
 import edu.utd.aos.mutex.references.MutexReferences;
 import edu.utd.com.aos.nodes.Host;
 
+/**
+ * Handling all requests received by the master server.
+ * @author pankaj
+ *
+ */
 public class MasterServerRequestHandler extends Thread {
 	final Socket worker;
 	final DataInputStream dis;

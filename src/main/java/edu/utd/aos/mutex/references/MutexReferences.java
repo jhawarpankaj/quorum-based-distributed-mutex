@@ -36,11 +36,34 @@ public class MutexReferences {
 	 */
 	public static final Charset ENCODING = StandardCharsets.UTF_8;
 	
+	/**
+	 * GRANT send by the quorum servers.
+	 */
 	public static final String GRANT = "GRANT";
+	
+	/**
+	 * REQUEST made by the clients.
+	 */
 	public static final String REQUEST = "REQUEST";
+	
+	/**
+	 * RELEASE sent to the quorum servers by clients.
+	 */
 	public static final String RELEASE = "RELEASE";
+	
+	/**
+	 * SUCCESS sent by the quorum servers.
+	 */
 	public static final String SUCCESS = "SUCCESS";
+	
+	/**
+	 * COMPLETE sent by the clients.
+	 */
 	public static final String COMPLETE = "COMPLETE";
+	
+	/**
+	 * ABORT sent by the client to master server on 20 req completion.
+	 */
 	public static final String ABORT = "ABORT";
 	
 	/**
